@@ -1,0 +1,18 @@
+﻿@model EmployeeMS.Models.Employee
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <p>Employee Name : @Model.Name</p>
+    <p>Born : @Model.BirthDate</p>
+    <p>Gender: @Model.Gender</p>
+</div>
+<div>
+    @Html.ActionLink("Delete Employee","Delete","Employee",new {Model.Id },null)
+</div>
+<div>
+    @Html.ActionLink("Edit Employee", "Edit", "Employee", new { Model.Id }, null)
+</div>

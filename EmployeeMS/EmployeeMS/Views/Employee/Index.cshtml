@@ -1,0 +1,20 @@
+﻿@model IEnumerable<EmployeeMS.Models.Employee>
+    @using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Employees";
+}
+<h2>Employees</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create","Employee")
+</p>
+
+<ul>
+@foreach(var emp in Model)
+{
+    <li>@Html.ActionLink(emp.Name,"Details","Employee",new {emp.Id },null)</li>
+    
+    
+}
+    </ul>
+
