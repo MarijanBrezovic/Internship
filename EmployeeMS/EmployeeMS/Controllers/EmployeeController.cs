@@ -6,30 +6,56 @@ using System.Web.Mvc;
 using EmployeeMS.Models;
 using Microsoft.AspNet.Identity;
 using System.Net;
+using EmployeeMS.Services;
+using PagedList;
 
 namespace EmployeeMS.Controllers
 {
     [Authorize]
     public class EmployeeController : Controller
     {
-        EmployeeDb db = new EmployeeDb();
-        ApplicationDbContext adbc = new ApplicationDbContext();
-       
-        // GET: Employee
-        public ActionResult Index()
+        private IEmployeeService employeeService;
+        public EmployeeController()
         {
+            this.employeeService = new EmployeeService(new EmployeeDb());
+        }
+
+        // GET: Employee
+        public ActionResult Index(string sortOrder,string searchBy, string currentFilter, int? pageNo, int perPage=5)
+        {
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.GenderSortParm = sortOrder == "Gender" ? "gender_desc" : "Gender";
+            ViewBag.CurrentFilter = searchBy;
+            List<SelectListItem> numberOfEmployees = new List<SelectListItem>();
+            numberOfEmployees.Add(new SelectListItem() { Text="2",Value="2"});
+            numberOfEmployees.Add(new SelectListItem() { Text = "5", Value = "5" });
+            numberOfEmployees.Add(new SelectListItem() { Text = "10", Value = "10" });
+            ViewBag.perPage = numberOfEmployees;
+            ViewBag.CurrentItemsPerPage = perPage;
+            if(searchBy!=null)
+            {
+                pageNo = 1;
+            }
+            else
+            {
+                searchBy = currentFilter;
+            }
+
+            int pageNumber = (pageNo ?? 1);
+            if (!String.IsNullOrEmpty(searchBy))
+            {
+                
+                return View(employeeService.SearchEmployee(searchBy).OrderBy(x=>x.Name).ToPagedList(pageNumber, perPage));
+                
+            }
             
-            string userId = User.Identity.GetUserId();
-            var employees = db.Employees.Where(x => x.UserId == userId);
-            return View(employees);
+            return View(employeeService.Sorting(sortOrder).ToPagedList(pageNumber, perPage));
+
         }
         public ActionResult Details(int id)
         {
-
-           
-
-            var detail = db.Employees.Single(x => x.Id == id);
-            return View(detail);
+            return View(employeeService.GetEmployeeById(id));
 
         }
         [HttpGet]
@@ -44,13 +70,7 @@ namespace EmployeeMS.Controllers
         {
             if(ModelState.IsValid)
             {
-                Employee emp = new Employee();
-                emp.Name = employee.Name;
-                emp.BirthDate = employee.BirthDate;
-                emp.Gender = employee.Gender;
-                emp.UserId = User.Identity.GetUserId();
-                db.Employees.Add(emp);
-                db.SaveChanges();
+                employeeService.CreateEmployee(employee);
                 return RedirectToAction("Index");
             }
             return View(employee);
@@ -61,7 +81,7 @@ namespace EmployeeMS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = db.Employees.Find(id);
+            Employee employee = employeeService.GetEmployeeById(id);
             if (employee == null)
             {
                 return HttpNotFound();
@@ -71,9 +91,7 @@ namespace EmployeeMS.Controllers
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
-            Employee employee =  db.Employees.Find(id);
-            db.Employees.Remove(employee);
-            db.Save();
+            employeeService.DeleteEmployee(id);
 
             return RedirectToAction("Index");
         }
@@ -83,7 +101,7 @@ namespace EmployeeMS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee =  db.Employees.Find(id);
+            Employee employee = employeeService.GetEmployeeById(id);
             if(employee==null)
             {
                 return HttpNotFound();
@@ -91,12 +109,11 @@ namespace EmployeeMS.Controllers
             return View(employee);
         }
         [HttpPost]
-        public ActionResult Edit([Bind(Include = "Id,Name,UserId,BirthDate,EmployeeSex")]Employee emp)
+        public ActionResult Edit([Bind(Include = "Id,Name,UserId,BirthDate,Gender")]Employee emp)
         {
             if(ModelState.IsValid)
             {
-                db.Entry(emp).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
+                employeeService.EditEmployee(emp);
                 return RedirectToAction("Index");
 
             }

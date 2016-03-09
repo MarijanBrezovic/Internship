@@ -1,5 +1,6 @@
-﻿@model IEnumerable<EmployeeMS.Models.Employee>
-    @using Microsoft.AspNet.Identity;
+﻿@model PagedList.IPagedList<EmployeeMS.Models.Employee>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 @{
     ViewBag.Title = "Employees";
 }
@@ -9,12 +10,44 @@
     @Html.ActionLink("Create New", "Create","Employee")
 </p>
 
-<ul>
-@foreach(var emp in Model)
+@using (Html.BeginForm("Index", "Employee", FormMethod.Get))
 {
-    <li>@Html.ActionLink(emp.Name,"Details","Employee",new {emp.Id },null)</li>
-    
-    
+    <p>
+        Find by name: @Html.TextBox("searchBy",ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+ </p>
+ <p>
+     Employees per page : @Html.DropDownList("perPage")
+ </p>
 }
-    </ul>
+<table>
+    <tr>
+        <th>
+            @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParm,perPage=ViewBag.CurrentItemsPerPage })
+        </th>
 
+        <th>
+            @Html.ActionLink("Gender", "Index", new { sortOrder = ViewBag.GenderSortParm, perPage = ViewBag.CurrentItemsPerPage })
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var emp in Model)
+    {
+        <tr>
+            <th>
+       @Html.ActionLink(emp.Name, "Details", "Employee", new { emp.Id }, null)
+                </th>
+            <th>
+            @emp.Gender
+                </th>
+            </tr>
+
+    }
+  
+    </table>
+    <br />
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+    @Html.PagedListPager(Model, pageNo => Url.Action("Index",
+    new { pageNo, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter, perPage = ViewBag.CurrentItemsPerPage }))
