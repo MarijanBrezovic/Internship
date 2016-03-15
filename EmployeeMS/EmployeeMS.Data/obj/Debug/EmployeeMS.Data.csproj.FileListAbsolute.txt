@@ -1,0 +1,14 @@
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\obj\Debug\EmployeeMS.Data.csprojResolveAssemblyReference.cache
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\EmployeeMS.Data.dll.config
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\EmployeeMS.Data.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\EmployeeMS.Data.pdb
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\EmployeeMS.Domain.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\EntityFramework.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\EmployeeMS.Domain.pdb
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\EntityFramework.xml
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\obj\Debug\EmployeeMS.Data.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\obj\Debug\EmployeeMS.Data.pdb
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\Microsoft.AspNet.Identity.Core.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\Microsoft.AspNet.Identity.Core.xml

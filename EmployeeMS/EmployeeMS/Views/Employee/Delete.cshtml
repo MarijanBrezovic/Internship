@@ -1,4 +1,4 @@
-﻿@model EmployeeMS.Models.Employee
+﻿@model EmployeeMS.Domain.Entities.Employee
 
 @{
     ViewBag.Title = "Delete";
@@ -20,7 +20,10 @@
         </dd>
 
         <dd>
-            @Html.DisplayFor(model => model.UserId)
+            @Html.DisplayFor(model => model.Gender)
+        </dd>
+        <dd>
+            @Html.DisplayFor(model => model.BirthDate)
         </dd>
 
     </dl>

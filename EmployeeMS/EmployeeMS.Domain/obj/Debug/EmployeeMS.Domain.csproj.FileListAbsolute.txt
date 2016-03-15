@@ -1,0 +1,5 @@
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Domain\bin\Debug\EmployeeMS.Domain.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Domain\bin\Debug\EmployeeMS.Domain.pdb
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Domain\obj\Debug\EmployeeMS.Domain.csprojResolveAssemblyReference.cache
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Domain\obj\Debug\EmployeeMS.Domain.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Domain\obj\Debug\EmployeeMS.Domain.pdb

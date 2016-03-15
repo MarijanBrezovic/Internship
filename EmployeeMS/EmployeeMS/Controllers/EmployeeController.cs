@@ -6,18 +6,20 @@ using System.Web.Mvc;
 using EmployeeMS.Models;
 using Microsoft.AspNet.Identity;
 using System.Net;
-using EmployeeMS.Services;
 using PagedList;
+using EmployeeMS.Domain.Repositories;
+using EmployeeMS.Data.Repositories;
+using EmployeeMS.Domain.Entities;
 
 namespace EmployeeMS.Controllers
 {
     [Authorize]
     public class EmployeeController : Controller
     {
-        private IEmployeeService employeeService;
+        private IEmployeeRepository employeeService;
         public EmployeeController()
         {
-            this.employeeService = new EmployeeService(new EmployeeDb());
+            this.employeeService = new EmployeeRepository();
         }
 
         // GET: Employee
@@ -26,14 +28,14 @@ namespace EmployeeMS.Controllers
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.GenderSortParm = sortOrder == "Gender" ? "gender_desc" : "Gender";
-            ViewBag.CurrentFilter = searchBy;
+            
             List<SelectListItem> numberOfEmployees = new List<SelectListItem>();
             numberOfEmployees.Add(new SelectListItem() { Text="2",Value="2"});
             numberOfEmployees.Add(new SelectListItem() { Text = "5", Value = "5" });
             numberOfEmployees.Add(new SelectListItem() { Text = "10", Value = "10" });
             ViewBag.perPage = numberOfEmployees;
             ViewBag.CurrentItemsPerPage = perPage;
-            if(searchBy!=null)
+            if(!String.IsNullOrEmpty(searchBy))
             {
                 pageNo = 1;
             }
@@ -41,7 +43,7 @@ namespace EmployeeMS.Controllers
             {
                 searchBy = currentFilter;
             }
-
+            ViewBag.CurrentFilter = searchBy;
             int pageNumber = (pageNo ?? 1);
             if (!String.IsNullOrEmpty(searchBy))
             {
@@ -62,7 +64,7 @@ namespace EmployeeMS.Controllers
         public ActionResult Create()
         {
 
-            var model = new Employee();
+            var model = new EmployeeViewModel();
             return View(model);
         }
         [HttpPost]
