@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 
 namespace EmployeeMS.Data.Repositories
 {
+    //Logic for Employee services
     public class EmployeeRepository : IEmployeeRepository
     {
         private EmployeeDb _db;
