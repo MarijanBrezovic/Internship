@@ -71,10 +71,10 @@ namespace EmployeeMS.Controllers
         }
         public ActionResult Details(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            //if (id == null)
+            //{
+            //    return View("Error");
+            //}
             return View(employeeService.GetEmployeeById(id,UserId));
 
         }
@@ -88,7 +88,7 @@ namespace EmployeeMS.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (upload != null && upload.ContentLength > 0)
+                if (upload != null && upload.ContentLength > 0 && upload.ContentType.Contains("image"))
                 {
 
                     byte[] image = new byte[upload.ContentLength];
@@ -101,14 +101,14 @@ namespace EmployeeMS.Controllers
         }
         public ActionResult Delete(int? id)
         {
-            if (id==null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            if (employeeService.GetEmployeeById(id,UserId) == null)
-            {
-                return HttpNotFound();
-            }
+            //if (id==null)
+            //{
+            //    return View("Error");
+            //}
+            //if (employeeService.GetEmployeeById(id,UserId) == null)
+            //{
+            //    return View("Error");
+            //}
             return View(employeeService.GetEmployeeById(id,UserId));
         }
         [HttpPost, ActionName("Delete")]
@@ -120,23 +120,24 @@ namespace EmployeeMS.Controllers
         }
         public ActionResult Edit(int? id)
         {
-            if (id==null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            if(employeeService.GetEmployeeById(id,UserId)== null)
-            {
-                return HttpNotFound();
-            }
+            //if (id==null)
+            //{
+            //    return View("Error");
+            //}
+            //if(employeeService.GetEmployeeById(id,UserId)== null)
+            //{
+            //    return View("Error");
+            //}
             return View(EmployeeIntoEmployeeViewModel.ConvertEmployeeIntoEmployeeViewModel(employeeService.GetEmployeeById(id,UserId)));
         }
         [HttpPost]
         public ActionResult Edit([Bind(Include = "Id,Name,UserId,BirthDate,Gender")]Employee emp,HttpPostedFileBase upload)
         {
+           
             if (ModelState.IsValid)
             {
 
-                if (upload != null && upload.ContentLength > 0)
+                if (upload != null && upload.ContentLength > 0 && upload.ContentType.Contains("image"))
                 {
 
                     byte[] image = new byte[upload.ContentLength];

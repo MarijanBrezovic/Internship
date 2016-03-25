@@ -20,8 +20,8 @@
      Employees per page : @Html.DropDownList("perPage")
  </p>
 }
-<table>
-    <tr>
+<table style="width:100%">
+    <tr style="border-bottom:2px dashed darkgrey;">
         <th>
             @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParm,perPage=ViewBag.CurrentItemsPerPage })
         </th>
@@ -29,23 +29,29 @@
         <th>
             @Html.ActionLink("Gender", "Index", new { sortOrder = ViewBag.GenderSortParm, perPage = ViewBag.CurrentItemsPerPage })
         </th>
+
+        <th>
+           <p>Picture</p>
+        </th>
         <th></th>
     </tr>
 
     @foreach (var emp in Model)
     {
-        <tr>
+        <tr style="border-bottom:2px dashed darkgrey;">
             <th>
-       @emp.Name
+       @Html.ActionLink(emp.Name,"Details","Employee",new { emp.Id},null)
                 </th>
             <th>
-            <text>&nbsp&nbsp</text>@emp.Gender
+            @emp.Gender
                 </th>
             <th>
-                <a href="Employee/Details/@emp.Id"><img src="data:image;base64,@System.Convert.ToBase64String(emp.Image)" width="50" height="50" /></a>
-                <br /><br /><br />
+                <br />
+               <img src="data:image;base64,@System.Convert.ToBase64String(emp.Image)" width="50" height="50" />
+                <br /><br />
             </th>
             </tr>
+
             
             
 

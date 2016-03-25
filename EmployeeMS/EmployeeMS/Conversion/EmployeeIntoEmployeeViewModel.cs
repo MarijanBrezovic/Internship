@@ -10,11 +10,6 @@ namespace EmployeeMS.Conversion
 {
     public class EmployeeIntoEmployeeViewModel
     {
-        private  static IEmployeeRepository employeeService;
-        public EmployeeIntoEmployeeViewModel(IEmployeeRepository ier)
-        {
-            employeeService = ier;
-        }
         public  static  EmployeeViewModel ConvertEmployeeIntoEmployeeViewModel(Employee employee)
         {
             EmployeeViewModel employeeViewModel = new EmployeeViewModel();

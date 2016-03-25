@@ -30,6 +30,10 @@ namespace EmployeeMS.Data.Repositories
         }
         public Employee GetEmployeeById(int? id,string userId)
         {
+            if(id==null)
+            {
+                throw new Exception("U have not entered the Employee Id");
+            }
             if (!GetEmployees(userId).Any(x => x.Id == id))
             {
                 throw new Exception("U do not have an Emplooye with the id specified" );
