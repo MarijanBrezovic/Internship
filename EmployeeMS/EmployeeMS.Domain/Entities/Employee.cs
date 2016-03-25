@@ -13,6 +13,7 @@ namespace EmployeeMS.Domain.Entities
 
         public DateTime BirthDate { get; set; }
         public Gender Gender { get; set; }
+        public byte[] Image { get; set; }
     }
     public enum Gender
     {

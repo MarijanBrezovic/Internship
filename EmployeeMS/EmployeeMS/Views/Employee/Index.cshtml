@@ -36,12 +36,18 @@
     {
         <tr>
             <th>
-       @Html.ActionLink(emp.Name, "Details", "Employee", new { emp.Id }, null)
+       @emp.Name
                 </th>
             <th>
-            @emp.Gender
+            <text>&nbsp&nbsp</text>@emp.Gender
                 </th>
+            <th>
+                <a href="Employee/Details/@emp.Id"><img src="data:image;base64,@System.Convert.ToBase64String(emp.Image)" width="50" height="50" /></a>
+                <br /><br /><br />
+            </th>
             </tr>
+            
+            
 
     }
   

@@ -1,13 +1,14 @@
-﻿using System;
+﻿using EmployeeMS.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EmployeeMS.Domain.Entities;
+
 namespace EmployeeMS.Data.Configuration
 {
-    public class EmployeeDb  : DbContext
+    class EmployeeDb : DbContext
     {
         public DbSet<Employee> EmployeeDatabase { get; set; }
 
@@ -15,6 +16,5 @@ namespace EmployeeMS.Data.Configuration
         {
             SaveChanges();
         }
-
     }
 }

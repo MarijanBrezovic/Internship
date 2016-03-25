@@ -4,17 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EmployeeMS.Domain.Entities;
+using System.Web;
 
 namespace EmployeeMS.Domain.Repositories
 {
      public interface IEmployeeRepository
     {
-        IEnumerable<Employee> GetEmployees();
-        Employee GetEmployeeById(int? id);
-        void CreateEmployee(Employee employee);
-        void EditEmployee(Employee employee);
+        IQueryable<Employee> GetEmployees(string userId);
+        Employee GetEmployeeById(int? id,string userId);
+        void CreateEmployee(Employee employee,string userId,byte[] image);
+        void EditEmployee(Employee employee,string userId,byte[] image);
         void DeleteEmployee(int id);
-        IEnumerable<Employee> SearchEmployee(string searchBy);
-        IEnumerable<Employee> Sorting(string sortOrder);
+        IQueryable<Employee> SearchEmployee(string searchBy,string userId);
+        IQueryable<Employee> Sorting(string sortOrder,string userId);
+
     }
 }

@@ -103,3 +103,13 @@ C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\Emplo
 C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS\bin\EmployeeMS.Domain.dll
 C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS\bin\EmployeeMS.Data.pdb
 C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS\bin\EmployeeMS.Domain.pdb
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS\bin\Microsoft.Practices.ServiceLocation.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS\bin\Microsoft.Practices.Unity.Configuration.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS\bin\Microsoft.Practices.Unity.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS\bin\Microsoft.Practices.Unity.RegistrationByConvention.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS\bin\Unity.Mvc5.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS\bin\Microsoft.Practices.ServiceLocation.pdb
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS\bin\Microsoft.Practices.ServiceLocation.xml
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS\bin\Microsoft.Practices.Unity.xml
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS\bin\Microsoft.Practices.Unity.Configuration.xml
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS\bin\Microsoft.Practices.Unity.RegistrationByConvention.xml

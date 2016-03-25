@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmployeeMS.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -10,21 +11,18 @@ namespace EmployeeMS.Models
 {
     public class EmployeeViewModel
     {
-        public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage="Please enter your name")]
+        [DisplayName("Full Name")]
         public string Name { get; set; }
-        [HiddenInput(DisplayValue= false)]
-        public string UserId { get; set; }
-        [Required]
+        [Required(ErrorMessage ="Please Enter The BirthDay")]
+        [DisplayName("Date of Birth")]
         [DataType(DataType.Date)]
         public DateTime BirthDate { get; set; }
         [Required]
         public Gender Gender { get; set; }
-    }
-    public enum Gender
-    {
-        Male,
-        Female,
-        Other
+        [Required(ErrorMessage = "You must chose")]
+        [DisplayName("Chose a picture")]
+        public byte[] Image { get; set; }
+
     }
 }

@@ -10,6 +10,9 @@ using PagedList;
 using EmployeeMS.Domain.Repositories;
 using EmployeeMS.Data.Repositories;
 using EmployeeMS.Domain.Entities;
+using Microsoft.Practices.Unity;
+using EmployeeMS.Conversion;
+using System.IO;
 
 namespace EmployeeMS.Controllers
 {
@@ -17,78 +20,96 @@ namespace EmployeeMS.Controllers
     public class EmployeeController : Controller
     {
         private IEmployeeRepository employeeService;
-        public EmployeeController()
+        private string UserId
         {
-            this.employeeService = new EmployeeRepository();
+            get { return HttpContext.User.Identity.GetUserId(); }
         }
-
-        // GET: Employee
-        public ActionResult Index(string sortOrder,string searchBy, string currentFilter, int? pageNo, int perPage=5)
+        public EmployeeController(IEmployeeRepository iEmployeeRepository)
         {
-            ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewBag.GenderSortParm = sortOrder == "Gender" ? "gender_desc" : "Gender";
-            
-            List<SelectListItem> numberOfEmployees = new List<SelectListItem>();
-            numberOfEmployees.Add(new SelectListItem() { Text="2",Value="2"});
-            numberOfEmployees.Add(new SelectListItem() { Text = "5", Value = "5" });
-            numberOfEmployees.Add(new SelectListItem() { Text = "10", Value = "10" });
-            ViewBag.perPage = numberOfEmployees;
-            ViewBag.CurrentItemsPerPage = perPage;
-            if(!String.IsNullOrEmpty(searchBy))
+            this.employeeService = iEmployeeRepository;
+        }
+        // GET: Employee
+        public ActionResult Index(IndexParameterModel indexParamaterModel)
+        {
+            if(indexParamaterModel.PerPage==0)
             {
-                pageNo = 1;
+                indexParamaterModel.PerPage = 5;
+            }
+            if(indexParamaterModel.PageNo==0)
+            {
+                indexParamaterModel.PageNo = 1;
+            }
+            
+            ViewBag.CurrentSort = indexParamaterModel.SortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(indexParamaterModel.SortOrder) ? "name_desc" : "";
+            ViewBag.GenderSortParm = indexParamaterModel.SortOrder == "Gender" ? "gender_desc" : "Gender";
+            ViewBag.perPage = Enum.GetValues(typeof(DropDownValues)).Cast<DropDownValues>().Select(x => new SelectListItem { Text = x.ToString(), Value = ((int)x).ToString() });
+
+            ViewBag.CurrentItemsPerPage = indexParamaterModel.PerPage;
+            if (!String.IsNullOrEmpty(indexParamaterModel.SearchBy))
+            {
+                indexParamaterModel.PageNo = 1;
             }
             else
             {
-                searchBy = currentFilter;
+                indexParamaterModel.SearchBy = indexParamaterModel.CurrentFilter;
             }
-            ViewBag.CurrentFilter = searchBy;
-            int pageNumber = (pageNo ?? 1);
-            if (!String.IsNullOrEmpty(searchBy))
+            ViewBag.CurrentFilter = indexParamaterModel.SearchBy;
+            if(!ModelState.IsValid)
             {
-                
-                return View(employeeService.SearchEmployee(searchBy).OrderBy(x=>x.Name).ToPagedList(pageNumber, perPage));
-                
+                throw new Exception("Model State is Not Valid!");
             }
-            
-            return View(employeeService.Sorting(sortOrder).ToPagedList(pageNumber, perPage));
+            if (!String.IsNullOrEmpty(indexParamaterModel.SearchBy))
+            {
+
+                return View(employeeService.SearchEmployee(indexParamaterModel.SearchBy,UserId).OrderBy(x => x.Name).ToPagedList(indexParamaterModel.PageNo, indexParamaterModel.PerPage));
+
+            }
+
+            return View(employeeService.Sorting(indexParamaterModel.SortOrder,UserId).ToPagedList(indexParamaterModel.PageNo, indexParamaterModel.PerPage));
 
         }
-        public ActionResult Details(int id)
+        public ActionResult Details(int? id)
         {
-            return View(employeeService.GetEmployeeById(id));
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            return View(employeeService.GetEmployeeById(id,UserId));
 
         }
         [HttpGet]
         public ActionResult Create()
         {
-
-            var model = new EmployeeViewModel();
-            return View(model);
+            return View(new EmployeeViewModel());
         }
         [HttpPost]
-        public ActionResult Create(Employee employee)
+        public ActionResult Create(Employee employee,HttpPostedFileBase upload)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                employeeService.CreateEmployee(employee);
-                return RedirectToAction("Index");
+                if (upload != null && upload.ContentLength > 0)
+                {
+
+                    byte[] image = new byte[upload.ContentLength];
+                    upload.InputStream.Read(image, 0, image.Length);
+                    employeeService.CreateEmployee(employee, UserId,image);
+                    return RedirectToAction("Index");
+                }
             }
-            return View(employee);
+            return View(new EmployeeViewModel());
         }
         public ActionResult Delete(int? id)
         {
-            if(id==null)
+            if (id==null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = employeeService.GetEmployeeById(id);
-            if (employee == null)
+            if (employeeService.GetEmployeeById(id,UserId) == null)
             {
                 return HttpNotFound();
             }
-            return View(employee);
+            return View(employeeService.GetEmployeeById(id,UserId));
         }
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
@@ -99,30 +120,36 @@ namespace EmployeeMS.Controllers
         }
         public ActionResult Edit(int? id)
         {
-            if(id==null)
+            if (id==null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = employeeService.GetEmployeeById(id);
-            if(employee==null)
+            if(employeeService.GetEmployeeById(id,UserId)== null)
             {
                 return HttpNotFound();
             }
-            return View(employee);
+            return View(EmployeeIntoEmployeeViewModel.ConvertEmployeeIntoEmployeeViewModel(employeeService.GetEmployeeById(id,UserId)));
         }
         [HttpPost]
-        public ActionResult Edit([Bind(Include = "Id,Name,UserId,BirthDate,Gender")]Employee emp)
+        public ActionResult Edit([Bind(Include = "Id,Name,UserId,BirthDate,Gender")]Employee emp,HttpPostedFileBase upload)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                employeeService.EditEmployee(emp);
-                return RedirectToAction("Index");
 
+                if (upload != null && upload.ContentLength > 0)
+                {
+
+                    byte[] image = new byte[upload.ContentLength];
+                    upload.InputStream.Read(image, 0, image.Length);
+
+                    employeeService.EditEmployee(emp, UserId,image);
+                    return RedirectToAction("Index");
+                }
             }
-            return View(emp);
+            return View(new EmployeeViewModel());
+            
         }
-
     }
 
-    
+  
 }
