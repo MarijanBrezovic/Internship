@@ -39,12 +39,10 @@ namespace EmployeeMS.Controllers
             {
                 indexParamaterModel.PageNo = 1;
             }
-            
             ViewBag.CurrentSort = indexParamaterModel.SortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(indexParamaterModel.SortOrder) ? "name_desc" : "";
             ViewBag.GenderSortParm = indexParamaterModel.SortOrder == "Gender" ? "gender_desc" : "Gender";
             ViewBag.perPage = Enum.GetValues(typeof(DropDownValues)).Cast<DropDownValues>().Select(x => new SelectListItem { Text = x.ToString(), Value = ((int)x).ToString() });
-
             ViewBag.CurrentItemsPerPage = indexParamaterModel.PerPage;
             if (!String.IsNullOrEmpty(indexParamaterModel.SearchBy))
             {
@@ -61,22 +59,13 @@ namespace EmployeeMS.Controllers
             }
             if (!String.IsNullOrEmpty(indexParamaterModel.SearchBy))
             {
-
                 return View(employeeService.SearchEmployee(indexParamaterModel.SearchBy,UserId).OrderBy(x => x.Name).ToPagedList(indexParamaterModel.PageNo, indexParamaterModel.PerPage));
-
             }
-
             return View(employeeService.Sorting(indexParamaterModel.SortOrder,UserId).ToPagedList(indexParamaterModel.PageNo, indexParamaterModel.PerPage));
-
         }
         public ActionResult Details(int? id)
         {
-            //if (id == null)
-            //{
-            //    return View("Error");
-            //}
             return View(employeeService.GetEmployeeById(id,UserId));
-
         }
         [HttpGet]
         public ActionResult Create()
@@ -101,56 +90,32 @@ namespace EmployeeMS.Controllers
         }
         public ActionResult Delete(int? id)
         {
-            //if (id==null)
-            //{
-            //    return View("Error");
-            //}
-            //if (employeeService.GetEmployeeById(id,UserId) == null)
-            //{
-            //    return View("Error");
-            //}
             return View(employeeService.GetEmployeeById(id,UserId));
         }
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
             employeeService.DeleteEmployee(id);
-
             return RedirectToAction("Index");
         }
         public ActionResult Edit(int? id)
         {
-            //if (id==null)
-            //{
-            //    return View("Error");
-            //}
-            //if(employeeService.GetEmployeeById(id,UserId)== null)
-            //{
-            //    return View("Error");
-            //}
             return View(EmployeeIntoEmployeeViewModel.ConvertEmployeeIntoEmployeeViewModel(employeeService.GetEmployeeById(id,UserId)));
         }
         [HttpPost]
         public ActionResult Edit([Bind(Include = "Id,Name,UserId,BirthDate,Gender")]Employee emp,HttpPostedFileBase upload)
         {
-           
             if (ModelState.IsValid)
             {
-
                 if (upload != null && upload.ContentLength > 0 && upload.ContentType.Contains("image"))
                 {
-
                     byte[] image = new byte[upload.ContentLength];
                     upload.InputStream.Read(image, 0, image.Length);
-
                     employeeService.EditEmployee(emp, UserId,image);
                     return RedirectToAction("Index");
                 }
             }
-            return View(new EmployeeViewModel());
-            
+            return View(new EmployeeViewModel());  
         }
-    }
-
-  
+    }  
 }
