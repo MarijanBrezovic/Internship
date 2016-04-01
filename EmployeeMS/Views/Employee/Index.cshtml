@@ -1,0 +1,65 @@
+﻿@model PagedList.IPagedList<EmployeeMS.Domain.Entities.Employee>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+@{
+    ViewBag.Title = "Employees";
+}
+<h2>Employees</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create","Employee")
+</p>
+
+@using (Html.BeginForm("Index", "Employee", FormMethod.Get))
+{
+    <p>
+        Find by name: @Html.TextBox("searchBy",ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+ </p>
+ <p>
+     Employees per page : @Html.DropDownList("perPage")
+ </p>
+}
+<table style="width:100%">
+    <tr style="border-bottom:2px dashed darkgrey;">
+        <th>
+            @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParm,perPage=ViewBag.CurrentItemsPerPage })
+        </th>
+
+        <th>
+            @Html.ActionLink("Gender", "Index", new { sortOrder = ViewBag.GenderSortParm, perPage = ViewBag.CurrentItemsPerPage })
+        </th>
+
+        <th>
+           <p>Picture</p>
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var emp in Model)
+    {
+        <tr style="border-bottom:2px dashed darkgrey;">
+            <th>
+       @Html.ActionLink(emp.Name,"Details","Employee",new { emp.Id},null)
+                </th>
+            <th>
+            @emp.Gender
+                </th>
+            <th>
+                <br />
+               <img src="data:image;base64,@System.Convert.ToBase64String(emp.Image)" width="50" height="50" />
+                <br /><br />
+            </th>
+            </tr>
+
+            
+            
+
+    }
+  
+    </table>
+    <br />
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+    @Html.PagedListPager(Model, pageNo => Url.Action("Index",
+    new { pageNo, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter, perPage = ViewBag.CurrentItemsPerPage }))
