@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EmployeeMS.Data.Repositories
 {
-    internal class UserRepository : Repository<User>, IUserRepository
+    public class UserRepository : Repository<User>, IUserRepository
     {
         internal UserRepository(ApplicationDbContext context)
             : base(context)
@@ -27,6 +27,7 @@ namespace EmployeeMS.Data.Repositories
         public Task<User> FindByUserNameAsync(System.Threading.CancellationToken cancellationToken, string username)
         {
             return Set.FirstOrDefaultAsync(x => x.UserName == username, cancellationToken);
+            
         }
     }
 }

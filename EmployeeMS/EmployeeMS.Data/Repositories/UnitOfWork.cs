@@ -16,9 +16,9 @@ namespace EmployeeMS.Data.Repositories
         #endregion
 
         #region Constructors
-        public UnitOfWork(string nameOrConnectionString)
+        public UnitOfWork()
         {
-            _context = new ApplicationDbContext(nameOrConnectionString);
+            _context = new ApplicationDbContext();
         }
         #endregion
 

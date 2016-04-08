@@ -117,5 +117,11 @@ namespace EmployeeMS.Controllers
             }
             return View(new EmployeeViewModel());  
         }
+        public ActionResult Novi()
+        {
+            var user = employeeService.NovaMetoda(UserId);
+            return View(user);
+            
+        }
     }  
 }

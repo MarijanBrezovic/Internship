@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using Unity.Mvc5;
 using EmployeeMS.Domain.Repositories;
 using EmployeeMS.Data.Repositories;
+using System.Data.Entity.Infrastructure;
 
 namespace EmployeeMS
 {
@@ -17,10 +18,13 @@ namespace EmployeeMS
         {
             var container = new UnityContainer();
 
-            container.RegisterType<IUnitOfWork, UnitOfWork>(new HierarchicalLifetimeManager(), new InjectionConstructor("Mvc5IdentityExample"));
+            //container.RegisterType<IUnitOfWork, UnitOfWork>(new HierarchicalLifetimeManager(), new InjectionConstructor("Mvc5IdentityExample"));
+            //container.RegisterType<IEmployeeRepository, EmployeeRepository>(new HierarchicalLifetimeManager(), new InjectionConstructor("Mvc5IdentityExample"));
+            container.RegisterType<IUnitOfWork, UnitOfWork>();
+            container.RegisterType<IEmployeeRepository, EmployeeRepository>();
             container.RegisterType<IUserStore<IdentityUser, Guid>, UserStore>(new TransientLifetimeManager());
             container.RegisterType<RoleStore>(new TransientLifetimeManager());
-            container.RegisterType<IEmployeeRepository, EmployeeRepository>();
+            //container.RegisterType<IEmployeeRepository, EmployeeRepository>();
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }
     }

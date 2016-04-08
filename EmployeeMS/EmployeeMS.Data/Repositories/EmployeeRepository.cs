@@ -14,18 +14,24 @@ namespace EmployeeMS.Data.Repositories
     //Logic for Employee services
     public class EmployeeRepository : IEmployeeRepository
     {
-        private EmployeeDb _db;
-        public EmployeeRepository()
+        private ApplicationDbContext _db = new ApplicationDbContext();
+        //public EmployeeRepository()
+        //{
+        //    this._db = new ApplicationDbContext();
+        //}
+        public IQueryable<Employee> GetAll()
         {
-            this._db = new EmployeeDb();
+            return _db.EmployeeDatabase;
+        }
+        public Employee GetOne(int id)
+        {
+            return _db.EmployeeDatabase.FirstOrDefault(x=>x.Id==id);
         }
         public IQueryable<Employee> GetEmployees(string userId)
         {
-
-
-            IQueryable<Employee> query = from c in _db.EmployeeDatabase
-                                         where c.UserId == userId
-                                         select c;
+            IQueryable < Employee > query = from c in _db.EmployeeDatabase
+                                            where c.UserId == userId
+                                            select c;
             return query;
         }
         public Employee GetEmployeeById(int? id,string userId)
@@ -42,7 +48,7 @@ namespace EmployeeMS.Data.Repositories
             return employee;
 
         }
-        public void CreateEmployee(Employee employee,string userId,byte [] image)
+        public Employee CreateEmployee(Employee employee,string userId,byte [] image)
         {
             if (employee.Name == null)
             {
@@ -52,14 +58,18 @@ namespace EmployeeMS.Data.Repositories
             {
                 throw new Exception("Your Employee Must Have a BirthDate");
             }
+            Guid userid = new Guid(userId);
+            var user = _db.Users.Single(x=>x.UserId == userid);
             Employee emp = new Employee();
             emp.Name = employee.Name;
             emp.UserId = userId;
             emp.BirthDate = employee.BirthDate;
             emp.Gender = employee.Gender;
             emp.Image = image;
+            user.Employees.Add(emp);
             _db.EmployeeDatabase.Add(emp);
             _db.Save();
+            return emp;
         }
         public void EditEmployee(Employee employee,string userId,byte[] image)
         {
@@ -72,7 +82,10 @@ namespace EmployeeMS.Data.Repositories
             {
                 throw new Exception("Your Employee Must Have a BirthDate");
             }
-
+            //if (!GetAll().Any(x => x.Id == employee.Id))
+            //{
+            //    throw new Exception("U do not have an Emplooye with the id specified");
+            //}
             employee.UserId = userId;
             employee.Image = image;
             _db.Entry(employee).State = System.Data.Entity.EntityState.Modified;
@@ -112,5 +125,15 @@ namespace EmployeeMS.Data.Repositories
             }
             return employees;
         }
+        public User NovaMetoda(string userId)
+        {
+            Guid g = new Guid(userId);
+            return _db.Users.Single(x=>x.UserId==g);
+        }
+        //public User asd(string userIdd)
+        //{
+        //    Guid userId = new Guid(userIdd);
+        //    return _db.Users.Single(x => x.UserId == userId);
+        //}
     }
 }

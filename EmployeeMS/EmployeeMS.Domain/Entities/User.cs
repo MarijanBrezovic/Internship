@@ -9,6 +9,7 @@ namespace EmployeeMS.Domain.Entities
         private ICollection<Claim> _claims;
         private ICollection<ExternalLogin> _externalLogins;
         private ICollection<Role> _roles;
+        private ICollection<Employee> _employees;
         #endregion
 
         #region Scalar Properties
@@ -39,6 +40,12 @@ namespace EmployeeMS.Domain.Entities
         {
             get { return _roles ?? (_roles = new List<Role>()); }
             set { _roles = value; }
+        }
+        public virtual ICollection<Employee>Employees
+        {
+            get { return _employees ?? (_employees = new List<Employee>()); }
+            set { _employees = value; }
+           
         }
         #endregion
     }

@@ -10,13 +10,16 @@ namespace EmployeeMS.Domain.Repositories
 {
      public interface IEmployeeRepository
     {
+        IQueryable<Employee> GetAll();
+        Employee GetOne(int id);
         IQueryable<Employee> GetEmployees(string userId);
         Employee GetEmployeeById(int? id,string userId);
-        void CreateEmployee(Employee employee,string userId,byte[] image);
+        Employee CreateEmployee(Employee employee,string userId,byte[] image);
         void EditEmployee(Employee employee,string userId,byte[] image);
         void DeleteEmployee(int id);
         IQueryable<Employee> SearchEmployee(string searchBy,string userId);
         IQueryable<Employee> Sorting(string sortOrder,string userId);
+        User NovaMetoda(string userId);
 
     }
 }
