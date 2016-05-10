@@ -1,16 +1,27 @@
 ﻿using EmployeeMS.Domain.Entities;
 using EmployeeMS.Domain.Repositories;
+using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace EmployeeMS.API.Controllers
 {
+    [EnableCorsAttribute("http://localhost:11820", "*", "*")]
     public class EmployeeController : ApiController
     {
+        
         IEmployeeRepository _employeeRepository;
         public EmployeeController(IEmployeeRepository er)
         {
@@ -18,46 +29,170 @@ namespace EmployeeMS.API.Controllers
         }
         public HttpResponseMessage Get()
         {
-            if(_employeeRepository.GetAll() == null)
-            {
-                return Request.CreateResponse(HttpStatusCode.NotFound);
-            }
+            //if(_employeeRepository.GetAll() == null)
+            //{
+            //    return Request.CreateResponse(HttpStatusCode.NotFound);
+            //}
             return Request.CreateResponse(HttpStatusCode.OK, _employeeRepository.GetAll());
         }
         public HttpResponseMessage Get(int id)
         {
-            if(_employeeRepository.GetOne(id) == null)
-            {
-                return Request.CreateResponse(HttpStatusCode.NotFound);
-            }
+            //if(_employeeRepository.GetOne(id) == null)
+            //{
+            //    return Request.CreateResponse(HttpStatusCode.NotFound);
+            //}
             return Request.CreateResponse(HttpStatusCode.OK, _employeeRepository.GetOne(id));
         }
-        public HttpResponseMessage Post([FromBody]Employee employee)
+        [HttpPost]
+        public HttpResponseMessage Post()
         {
-            string userId = "268d9574-7c45-4c04-8666-2b9be39681bc";
-            byte[] image = null;
-            return Request.CreateResponse(HttpStatusCode.Created, _employeeRepository.CreateEmployee(employee,userId,image));
+            Employee employee = SetEmployeeFromClientSide();
+            if(employee == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+            _employeeRepository.CreateEmployee(employee, employee.UserId, employee.Image);
+            return Request.CreateResponse(HttpStatusCode.Created);
         }
+
+
         public HttpResponseMessage Delete(int id)
         {
-            if(_employeeRepository.GetOne(id) == null)
-            {
-                return Request.CreateResponse(HttpStatusCode.NotFound);
-            }
+            //if(_employeeRepository.GetOne(id) == null)
+            //{
+            //    return Request.CreateResponse(HttpStatusCode.NotFound);
+            //}
             _employeeRepository.DeleteEmployee(id);
             return Request.CreateResponse(HttpStatusCode.OK);
         }
-        public HttpResponseMessage Patch(int id,[FromBody]Employee employee)
+        public HttpResponseMessage Put(int id,[FromBody]Employee employee)
         {
-            string userId = "268d9574-7c45-4c04-8666-2b9be39681bc";
-            byte[] image = null;
-            if (!_employeeRepository.GetAll().Any(x=>x.Id==id))
-            {
-                return Request.CreateResponse(HttpStatusCode.NotFound);
-            }
+            //if (!_employeeRepository.GetAll().Any(x=>x.Id==id))
+            //{
+            //    return Request.CreateResponse(HttpStatusCode.NotFound);
+            //}
             employee.Id = id;
-            _employeeRepository.EditEmployee(employee, userId, image);
+            _employeeRepository.EditEmployee(employee, employee.UserId, employee.Image);
             return Request.CreateResponse(HttpStatusCode.OK);
         }
+        /// <summary>
+        /// Returns an employee instance that has been passed down by the client side.
+        /// </summary>
+        /// <returns></returns>
+        private Employee SetEmployeeFromClientSide ()
+        {
+            Employee employee = new Employee();
+            try {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                }
+
+                var httpRequest = HttpContext.Current.Request;
+                var emp = Map<EmployeeDto>((key) => httpRequest.Form.Get(key));
+                var image = Map<ImageDto>((key) => httpRequest.Files.Get(key));
+                employee.Name = emp.Name;
+                employee.Gender = (Gender)Enum.Parse(typeof(Gender), emp.Gender);
+                employee.BirthDate = Convert.ToDateTime(emp.BirthDate);
+                employee.UserId = emp.UserId;
+                if (image.Image != null)
+                {
+                    try
+                    {
+                        employee.Image = new byte[image.Image.ContentLength];
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    int numbytes = (int)employee.Image.Length;
+
+                    int n = image.Image.InputStream.Read(employee.Image, 0, numbytes);
+                }
+                else {
+                    employee.Image = GetDefaultEmployeePicture(employee.Gender);
+                }
+            }
+            catch(Exception ex)
+            {
+                Log.Fatal(ex.ToString());
+                return null;
+            }
+            return employee;
+        }
+        /// <summary>
+        /// Sets a default picture based on the employee Gender.
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns></returns>
+        private byte[] GetDefaultEmployeePicture(Gender gender)
+        {
+            var path = AppDomain.CurrentDomain.BaseDirectory;
+            if (gender == Gender.Male) {
+                return File.ReadAllBytes(path + "Uploads\\Man.jpg");
+            }
+            else if (gender == Gender.Female)
+            {
+                return File.ReadAllBytes(path + "Uploads\\Woman.jpg");
+            }
+            else
+            {
+                return File.ReadAllBytes(path + "Uploads\\Other.jpg");
+            }
+        }
+
+        private static T Map<T>(Func<string, object> fun)
+        {
+            var mappedObject = Activator.CreateInstance<T>();
+            foreach(var prop in mappedObject.GetType().GetProperties())
+            {
+                var custAttr = Attribute.GetCustomAttribute(prop, typeof(MapNameAttribute)) as MapNameAttribute;
+                if(custAttr != null)
+                {
+                    prop.SetValue(mappedObject, fun(custAttr.Name));
+                }
+                var reqAtttr = Attribute.GetCustomAttribute(prop, typeof(RequiredAttribute)) as RequiredAttribute;
+                if(reqAtttr != null)
+                {
+                    
+                    if(reqAtttr.IsValid(fun(custAttr.Name)) == false)
+                    {
+                        throw new Exception(custAttr.Name + "Is Required");
+                    }
+                }
+
+            }
+            return mappedObject;
+        }
+
+
+
+        public class EmployeeDto
+        {
+            [Required]
+            [MapName(Name = "employee[Name]")]
+            public string Name { get; set; }
+            [MapName(Name = "employee[UserId]")]
+            [Required]
+            public string UserId { get; set; }
+            [Required]
+            [MapName(Name = "employee[BirthDate]")]
+            public string BirthDate { get; set; }
+            [Required]
+            [MapName(Name = "employee[Gender]")]
+            public string Gender { get; set; }
+
+        }
+        public class ImageDto
+        {
+            [MapName(Name ="employee[Image][0]")]
+            public HttpPostedFile Image { get; set; }
+        }
+
+        class MapNameAttribute : Attribute
+        {
+            public string Name { get; set; }
+        }
     }
+    
 }

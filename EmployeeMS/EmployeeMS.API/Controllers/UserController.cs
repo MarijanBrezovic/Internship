@@ -6,9 +6,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace EmployeeMS.API.Controllers
 {
+    [EnableCorsAttribute("http://localhost:11820", "*", "*")]
     public class UserController : ApiController
     {
         IUnitOfWork _userrepo;

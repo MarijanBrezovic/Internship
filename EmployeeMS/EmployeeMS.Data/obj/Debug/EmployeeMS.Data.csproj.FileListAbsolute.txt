@@ -12,3 +12,9 @@ C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\Emplo
 C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\obj\Debug\EmployeeMS.Data.pdb
 C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\Microsoft.AspNet.Identity.Core.dll
 C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\Microsoft.AspNet.Identity.Core.xml
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\Serilog.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\Serilog.FullNetFx.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\Serilog.pdb
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\Serilog.xml
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\Serilog.FullNetFx.pdb
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\Serilog.FullNetFx.xml

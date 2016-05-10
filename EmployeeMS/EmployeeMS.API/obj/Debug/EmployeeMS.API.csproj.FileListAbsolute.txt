@@ -103,3 +103,12 @@ C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\Emplo
 C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.API\bin\Ninject.xml
 C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.API\bin\Ninject.Web.Common.xml
 C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.API\bin\Ninject.Web.Mvc.xml
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.API\bin\System.Web.Cors.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.API\bin\System.Web.Http.Cors.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.API\bin\System.Web.Http.Cors.xml
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.API\bin\Serilog.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.API\bin\Serilog.FullNetFx.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.API\bin\Serilog.pdb
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.API\bin\Serilog.xml
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.API\bin\Serilog.FullNetFx.pdb
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.API\bin\Serilog.FullNetFx.xml
