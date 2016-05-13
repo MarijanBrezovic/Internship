@@ -89,12 +89,8 @@ namespace EmployeeMS.API.Controllers
                 }
 
                 var httpRequest = HttpContext.Current.Request;
-                var emp = Map<EmployeeDto>((key) => httpRequest.Form.Get(key));
+                employee = ConvertEmployeeDtoToEmployee(Map<EmployeeDto>((key) => httpRequest.Form.Get(key)));
                 var image = Map<ImageDto>((key) => httpRequest.Files.Get(key));
-                employee.Name = emp.Name;
-                employee.Gender = (Gender)Enum.Parse(typeof(Gender), emp.Gender);
-                employee.BirthDate = Convert.ToDateTime(emp.BirthDate);
-                employee.UserId = emp.UserId;
                 if (image.Image != null)
                 {
                     try
@@ -140,31 +136,36 @@ namespace EmployeeMS.API.Controllers
                 return File.ReadAllBytes(path + "Uploads\\Other.jpg");
             }
         }
-
+        private Employee ConvertEmployeeDtoToEmployee(EmployeeDto emp)
+        {
+            Employee employee = new Employee();
+            employee.Name = emp.Name;
+            employee.Gender = emp.Gender;
+            employee.BirthDate = emp.BirthDate;
+            employee.UserId = emp.UserId;
+            return employee;
+        }
         private static T Map<T>(Func<string, object> fun)
         {
             var mappedObject = Activator.CreateInstance<T>();
             foreach(var prop in mappedObject.GetType().GetProperties())
             {
                 var custAttr = Attribute.GetCustomAttribute(prop, typeof(MapNameAttribute)) as MapNameAttribute;
-                if(custAttr != null)
+                if (custAttr != null)
                 {
-                    prop.SetValue(mappedObject, fun(custAttr.Name));
+                    custAttr.Map(prop, mappedObject, fun(custAttr.Name));
                 }
-                var reqAtttr = Attribute.GetCustomAttribute(prop, typeof(RequiredAttribute)) as RequiredAttribute;
-                if(reqAtttr != null)
-                {
-                    
-                    if(reqAtttr.IsValid(fun(custAttr.Name)) == false)
+                    var reqAtttr = Attribute.GetCustomAttribute(prop, typeof(RequiredAttribute)) as RequiredAttribute;
+                    if (reqAtttr != null)
                     {
-                        throw new Exception(custAttr.Name + "Is Required");
-                    }
-                }
-
+                        if (reqAtttr.IsValid(fun(custAttr.Name)) == false)
+                        {
+                            throw new Exception(custAttr.Name + "Is Required");
+                        }
+                    } 
             }
             return mappedObject;
         }
-
 
 
         public class EmployeeDto
@@ -177,10 +178,10 @@ namespace EmployeeMS.API.Controllers
             public string UserId { get; set; }
             [Required]
             [MapName(Name = "employee[BirthDate]")]
-            public string BirthDate { get; set; }
+            public DateTime BirthDate { get; set; }
             [Required]
             [MapName(Name = "employee[Gender]")]
-            public string Gender { get; set; }
+            public Gender Gender { get; set; }
 
         }
         public class ImageDto
@@ -188,10 +189,31 @@ namespace EmployeeMS.API.Controllers
             [MapName(Name ="employee[Image][0]")]
             public HttpPostedFile Image { get; set; }
         }
-
         class MapNameAttribute : Attribute
         {
             public string Name { get; set; }
+            public void Map(System.Reflection.PropertyInfo prop, object mappedObject, object value)
+            {
+                if(prop.PropertyType == typeof(string))
+                {
+                    prop.SetValue(mappedObject, value);
+                }
+                else if (prop.PropertyType == typeof(HttpPostedFile))
+                {
+                    prop.SetValue(mappedObject, value);
+                }
+                else if (prop.PropertyType == typeof(Gender))
+                {
+                    value = (Gender)Enum.Parse(typeof(Gender), value.ToString());
+                    prop.SetValue(mappedObject, value);
+                }
+                else if (prop.PropertyType == typeof(DateTime))
+                {
+                    value = Convert.ToDateTime(value);
+                    prop.SetValue(mappedObject, value);
+                }
+
+            }
         }
     }
     
