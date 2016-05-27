@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using EmployeeMS.Domain.Entities;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,7 +7,7 @@ namespace EmployeeMS.Domain.Repositories
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        List<TEntity> GetAll();
+        IEnumerable<User> GetAll();
         Task<List<TEntity>> GetAllAsync();
         Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken);
 
@@ -14,7 +15,7 @@ namespace EmployeeMS.Domain.Repositories
         Task<List<TEntity>> PageAllAsync(int skip, int take);
         Task<List<TEntity>> PageAllAsync(CancellationToken cancellationToken, int skip, int take);
 
-        TEntity FindById(object id);
+        User FindById(string id);
         Task<TEntity> FindByIdAsync(object id);
         Task<TEntity> FindByIdAsync(CancellationToken cancellationToken, object id);
 

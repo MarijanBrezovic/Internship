@@ -1,5 +1,6 @@
 ﻿using EmployeeMS.Domain.Entities;
 using EmployeeMS.Domain.Repositories;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,8 +28,9 @@ namespace EmployeeMS.API.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.OK,result);
         }
-        public HttpResponseMessage Get(Guid id)
+        public HttpResponseMessage Get(string id)
         {
+            Log.Information("Geting employee details");
             var result = _userrepo.UserRepository.FindById(id);
             if(result == null)
             {

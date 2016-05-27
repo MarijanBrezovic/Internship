@@ -18,3 +18,12 @@ C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\Emplo
 C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\Serilog.xml
 C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\Serilog.FullNetFx.pdb
 C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\Serilog.FullNetFx.xml
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\MongoDB.Bson.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\MongoDB.Driver.Core.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\MongoDB.Driver.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\MongoDB.Driver.Legacy.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\MongoDB.Bson.xml
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\MongoDB.Driver.xml
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\MongoDB.Driver.Legacy.xml
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\Ninject.dll
+C:\Users\marijan.brezovic\Documents\Visual Studio 2015\Projects\EmployeeMS\EmployeeMS.Data\bin\Debug\Ninject.xml

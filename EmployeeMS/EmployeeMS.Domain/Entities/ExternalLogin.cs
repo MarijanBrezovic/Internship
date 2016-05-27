@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 
 namespace EmployeeMS.Domain.Entities
 {
@@ -11,7 +12,7 @@ namespace EmployeeMS.Domain.Entities
         public virtual string LoginProvider { get; set; }
         public virtual string ProviderKey { get; set; }
         
-        public virtual Guid UserId { get; set; }
+        public virtual ObjectId UserId { get; set; }
         #endregion
 
         #region Navigation Properties
@@ -21,7 +22,7 @@ namespace EmployeeMS.Domain.Entities
             set
             {
                 _user = value;
-                UserId = value.UserId;
+                UserId = value._id;
             }
         }
         #endregion

@@ -15,6 +15,7 @@ namespace EmployeeMS.API.App_Start
     using System.Web.Http;
     using WebApiContrib.IoC.Ninject;
     using Domain.Entities;
+    using Data.Configuration;
     public static class NinjectWebCommon 
     {
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
@@ -69,6 +70,7 @@ namespace EmployeeMS.API.App_Start
             //kernel.Bind<IRepository<User>>().To<Repository<User>>();
             //kernel.Bind<IUserRepository>().To<UserRepository>();
             kernel.Bind<IUnitOfWork>().To<UnitOfWork>();
+            kernel.Bind<IMongoDbContext>().To<MongoDbContext>();
         }        
     }
 }

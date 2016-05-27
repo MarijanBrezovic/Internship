@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 
 namespace EmployeeMS.Domain.Entities
 {
@@ -8,7 +9,7 @@ namespace EmployeeMS.Domain.Entities
 
         #region Scalar Properties
         public virtual int ClaimId { get; set; }
-        public virtual Guid UserId { get; set; }
+        public virtual ObjectId UserId { get; set; }
         public virtual string ClaimType { get; set; }
         public virtual string ClaimValue { get; set; }
         #endregion
@@ -22,7 +23,7 @@ namespace EmployeeMS.Domain.Entities
                 if (value == null)
                     throw new ArgumentNullException("value");
                 _user = value;
-                UserId = value.UserId;
+                UserId = value._id;
             }
         }
         #endregion

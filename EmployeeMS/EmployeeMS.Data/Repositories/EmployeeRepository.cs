@@ -10,130 +10,110 @@ using System.Web;
 using Microsoft.AspNet.Identity;
 using System.Net;
 using Serilog;
+using MongoDB.Bson;
+using MongoDB.Driver.Builders;
+using MongoDB.Driver;
 
 namespace EmployeeMS.Data.Repositories
 {
     //Logic for Employee services
     public class EmployeeRepository : IEmployeeRepository
     {
-        private ApplicationDbContext _db = new ApplicationDbContext();
-        //public EmployeeRepository()
-        //{
-        //    this._db = new ApplicationDbContext();
-        //}
-        public IQueryable<Employee> GetAll()
+        private IMongoDbContext _mongoDbContext;
+        public EmployeeRepository(IMongoDbContext mdbc)
+        {
+            _mongoDbContext = mdbc;
+        }
+        public IEnumerable<Employee> GetAll()
         {
             Log.Information("Started Returning All Employees");
             try {
-                return _db.EmployeeDatabase;
+                var employees = _mongoDbContext.GetEmployeeCollection().Find(x=>true).ToList();
+                return employees;
             }
             catch(Exception ex)
             {
                 throw ex;
             }
         }
-        public Employee GetOne(int id)
+        public Employee GetOne(string id)
         {
             Log.Information("Geting employee with id:" + id);
-            return _db.EmployeeDatabase.FirstOrDefault(x => x.Id == id);
+            var employee = _mongoDbContext.GetEmployeeCollection().Find(x => x._id.Equals(new ObjectId(id))).FirstOrDefault();
+            return employee;
         }
-        //public IQueryable<Employee> GetEmployees(string userId)
-        //{
-        //    IQueryable<Employee> query = from c in _db.EmployeeDatabase
-        //                                 where c.UserId == userId
-        //                                 select c;
-        //    return query;
-        //}
-        //public Employee GetEmployeeById(int? id, string userId)
-        //{
-        //    if (id == null)
-        //    {
-        //        throw new Exception("U have not entered the Employee Id");
-        //    }
-        //    if (!GetEmployees(userId).Any(x => x.Id == id))
-        //    {
-        //        throw new Exception("U do not have an Emplooye with the id specified");
-        //    }
-        //    Employee employee = GetEmployees(userId).Single(x => x.Id == id);
-        //    return employee;
 
-        //}
-        public void CreateEmployee(Employee employee, string userId, byte[] image)
+        public void CreateEmployee(EmployeeDtoModel employee)
         {
+            
             Employee emp = new Employee();
             Log.Information("CreateEmployee Started");
-            try {
-                Guid userid = new Guid(userId);
-                emp.Name = employee.Name;
-                emp.UserId = userId;
-                emp.BirthDate = employee.BirthDate;
-                emp.Gender = employee.Gender;
-                emp.Image = image;
-                _db.Users.Single(x => x.UserId == userid).Employees.Add(emp);
-                _db.EmployeeDatabase.Add(emp);
-                _db.Save();
+            try
+            {
+                ObjectId userid = new ObjectId(employee.UserId);
+                emp = employee.ToEmployeeModel();
+                var user = _mongoDbContext.GetUserCollection().Find(x => x._id.Equals(userid)).FirstOrDefault();
+                var asd = user.UserName;
+                _mongoDbContext.GetEmployeeCollection().InsertOne(emp);
+                user.Employees.Add(emp);
+                _mongoDbContext.GetUserCollection().ReplaceOne<User>(x => x._id.Equals(userid), user, new UpdateOptions { IsUpsert = true });
+
+
             }
             catch(Exception ex)
             {
                 Log.Fatal(ex.ToString());
-
-            }  
+            }
         }
-        public void EditEmployee(Employee employee, string userId, byte[] image)
+        public void EditEmployee(EmployeeDtoModel employeeDto)
         {
             Log.Information("Edit Employee Started");
-            if (employee.Name == null)
+            if (employeeDto.Name == null)
             {
                 throw new Exception("Your Employee Must Have a Name");
             }
-            if (employee.BirthDate == null)
+            if (employeeDto.BirthDate == null)
             {
                 throw new Exception("Your Employee Must Have a BirthDate");
             }
-            //if (!GetAll().Any(x => x.Id == employee.Id))
-            //{
-            //    throw new Exception("U do not have an Emplooye with the id specified");
-            //}
-            employee.UserId = userId;
-            employee.Image = image;
-            _db.Entry(employee).State = System.Data.Entity.EntityState.Modified;
+            var employee = employeeDto.ToEmployeeModel();
+            employee._id = new ObjectId(employeeDto.Id);
+            User user = new User();
+            var users = _mongoDbContext.GetUserCollection().Find(x => true).ToList();
+            foreach (User foreachUser in users)
+            {
+                var firsOrDefaultEmployee = foreachUser.Employees.FirstOrDefault(x => x._id.Equals(employee._id));
+                if(firsOrDefaultEmployee != null)
+                {
+                    user = foreachUser;
+                    foreachUser.Employees.Remove(firsOrDefaultEmployee);
+                    foreachUser.Employees.Add(employee);
+                    break;
+                }
+            }
+            _mongoDbContext.GetEmployeeCollection().ReplaceOne<Employee>(x => x._id.Equals(new ObjectId(employeeDto.Id)), employee, new UpdateOptions { IsUpsert = true });
+            _mongoDbContext.GetUserCollection().ReplaceOne<User>(x => x._id.Equals(user._id), user, new UpdateOptions { IsUpsert = true });
             Log.Information("Edit Employee Ended");
-            _db.Save();
         }
-        public void DeleteEmployee(int id)
+        public void DeleteEmployee(string id)
         {
+            User user = new User();
             Log.Information("Delete Employee Started");
-            Employee employee = _db.EmployeeDatabase.Find(id);
-            _db.EmployeeDatabase.Remove(employee);
-            _db.Save();
-        }
-        //public IQueryable<Employee> SearchEmployee(string searchBy, string userId)
-        //{
+            var users = _mongoDbContext.GetUserCollection().Find(x => true).ToList();
+            foreach (User foreachUser in users)
+            {
+                var firsOrDefaultEmployee = foreachUser.Employees.FirstOrDefault(x => x._id.Equals(new ObjectId(id)));
+                if (firsOrDefaultEmployee != null)
+                {
+                    user = foreachUser;
+                    foreachUser.Employees.Remove(firsOrDefaultEmployee);
+                    break;
+                }
+            }
+            _mongoDbContext.GetUserCollection().ReplaceOne<User>(x => x._id.Equals(user._id), user, new UpdateOptions { IsUpsert = true });
+            _mongoDbContext.GetEmployeeCollection().DeleteOne<Employee>(x => x._id.Equals(new ObjectId(id)));
 
-        //    IQueryable<Employee> query = from c in GetEmployees(userId)
-        //                                 where c.Name.Contains(searchBy)
-        //                                 select c;
-        //    return query;
-        //}
-        //public IQueryable<Employee> Sorting(string sortOrder, string userId)
-        //{
-        //    var employees = GetEmployees(userId);
-        //    switch (sortOrder)
-        //    {
-        //        case "name_desc":
-        //            employees = employees.OrderByDescending(x => x.Name);
-        //            break;
-        //        case "Gender":
-        //            employees = employees.OrderBy(s => s.Gender);
-        //            break;
-        //        case "gender_desc":
-        //            employees = employees.OrderByDescending(s => s.Gender);
-        //            break;
-        //        default:
-        //            employees = employees.OrderBy(s => s.Name);
-        //            break;
-        //    }
-        //    return employees;
-        //}
+        }
+        
     }
 }

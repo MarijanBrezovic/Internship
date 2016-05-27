@@ -9,9 +9,8 @@ namespace EmployeeMS.Data.Configuration
         //{
 
         //}
-
         public ApplicationDbContext()
-            : base("DefaultConnection")
+            : base("Ojsa Prske")
         {
         }
         public DbSet<Employee> EmployeeDatabase { get; set; }

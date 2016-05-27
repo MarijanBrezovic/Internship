@@ -1,5 +1,8 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,11 +10,9 @@ namespace EmployeeMS.Domain.Entities
 {
     public class Employee
     {
-        //private User _user;
-        public int Id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public ObjectId _id { get; set; }
         public string Name { get; set; }
-        public string UserId { get; set; }
-
         public DateTime BirthDate { get; set; }
         public Gender Gender { get; set; }
         public byte[] Image { get; set; }

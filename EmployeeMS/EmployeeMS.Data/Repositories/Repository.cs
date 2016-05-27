@@ -1,5 +1,9 @@
 ﻿using EmployeeMS.Data.Configuration;
+using EmployeeMS.Domain.Entities;
 using EmployeeMS.Domain.Repositories;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using Serilog;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -10,6 +14,8 @@ namespace EmployeeMS.Data.Repositories
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
+        // CANNOT DO DI TO MUCH BIND TO ENTITY!
+        private IMongoDbContext _mongoDbContext = new MongoDbContext();
         private ApplicationDbContext _context;
         private DbSet<TEntity> _set;
 
@@ -23,9 +29,10 @@ namespace EmployeeMS.Data.Repositories
             get { return _set ?? (_set = _context.Set<TEntity>()); }
         }
 
-        public List<TEntity> GetAll()
+        public IEnumerable<User> GetAll()
         {
-            return Set.ToList();
+            var user = _mongoDbContext.GetUserCollection().Find(x => true).ToList();
+            return user;
         }
 
         public Task<List<TEntity>> GetAllAsync()
@@ -53,9 +60,14 @@ namespace EmployeeMS.Data.Repositories
             return Set.Skip(skip).Take(take).ToListAsync(cancellationToken);
         }
 
-        public TEntity FindById(object id)
+        public User FindById(string id)
         {
-            return Set.Find(id);
+            
+            var Id = new ObjectId(id);
+            var user = _mongoDbContext.GetUserCollection().Find(x => x._id.Equals(Id)).FirstOrDefault();
+            Log.Information("Find by id started");
+
+            return user;
         }
 
         public Task<TEntity> FindByIdAsync(object id)
